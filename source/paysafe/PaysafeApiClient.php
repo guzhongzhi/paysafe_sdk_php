@@ -214,6 +214,7 @@ class PaysafeApiClient
         }
         curl_setopt_array($curl, $opts);
         $response = curl_exec($curl);
+
         if($response === false) {
             throw $this->getPaysafeException(null, 'cURL has encountered an error in connecting to the host: (' . curl_errno($curl) . ') ' . curl_error($curl) . '. See cURL error codes for explanations: http://curl.haxx.se/libcurl/c/libcurl-errors.html', curl_errno($curl));
         }
@@ -231,6 +232,7 @@ class PaysafeApiClient
             if ($responseCode < 200 || $responseCode >= 206) {
                 $error = $this->getPaysafeException($responseCode, $return['error']['message'], $return['error']['code']);
                 $error->rawResponse = $return;
+                $error->respones = $return;
                 if(array_key_exists('error', $return)) {
                     if (array_key_exists('fieldErrors', $return['error'])) {
                         $error->fieldErrors = $return['error']['fieldErrors'];

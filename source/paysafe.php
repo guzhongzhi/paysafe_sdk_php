@@ -33,8 +33,25 @@ if (!function_exists('curl_version')) {
 
 function __PaysafeAutoloader($className)
 {
-    $classPath = strtolower(str_replace("\\", DIRECTORY_SEPARATOR, $className));
-    if (($classFile = realpath(__DIR__ . DIRECTORY_SEPARATOR . $classPath . '.php'))) {
+    
+    $classPath = (str_replace("\\", DIRECTORY_SEPARATOR, $className));
+    $classPathExploded = explode(DIRECTORY_SEPARATOR,$classPath);
+    $classPathExploded[0] = strtolower($classPathExploded[0]);
+    if(strtolower($classPathExploded[0]) != "paysafe") {
+        return;
+    }
+    $classPath = implode(DIRECTORY_SEPARATOR, $classPathExploded);
+    
+    $classPath = __DIR__ . DIRECTORY_SEPARATOR . $classPath . '.php';
+    if(!file_exists($classPath)) {
+        try {
+            throw new \Exception("NO FILE:".$classPath);
+        }catch(\Exception $ex) {
+            echo $ex->__toString();
+            die();
+        }
+    }
+    if (($classFile = realpath($classPath))) {
         require_once( $classFile );
     }
 }
